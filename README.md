@@ -14,7 +14,8 @@
 - Bibliography entry for citation:
 ```
 article{islam2020sesr,
-    title={Simultaneous Enhancement and Super-Resolution of Underwater Imagery &nbsp;for Improved Visual Perception},
+    title={Simultaneous Enhancement and Super-Resolution of Underwater Imagery 
+    for Improved Visual Perception},
     author={Islam, Md Jahidul and Luo, Peigen and Sattar, Junaed},
     journal={arXiv preprint arXiv:x.y},
     year={2020}
