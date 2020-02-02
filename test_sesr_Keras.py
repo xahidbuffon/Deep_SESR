@@ -17,13 +17,15 @@ from keras.models import model_from_json
 from utils.data_utils import getPaths, preprocess, deprocess
 
 # input and output data shape
+scale = 2 
 hr_width, hr_height = 640, 480 # HR
 lr_width, lr_height = 320, 240 # LR (1/2x)
 lr_shape = (lr_height, lr_width, 3)
 hr_shape = (hr_height, hr_width, 3)
 
 ## for testing arbitrary local data
-data_dir = "data/sample_test_ufo/Inp/"
+data_dir = "data/test_mixed/"
+#data_dir = "data/sample_test_ufo/lrd/"
 test_paths = getPaths(data_dir)
 print ("{0} test images are loaded".format(len(test_paths)))
 
@@ -49,7 +51,8 @@ times = [];
 for img_path in test_paths:
     # prepare data
     img_name = ntpath.basename(img_path).split('.')[0]
-    img_lrd = misc.imread(img_path, mode='RGB').astype(np.float)  
+    img_lrd = misc.imread(img_path, mode='RGB').astype(np.float) 
+    inp_h, inp_w, _  =  img_lrd.shape 
     img_lrd = misc.imresize(img_lrd, (lr_height,lr_width))
     im = preprocess(img_lrd)
     im = np.expand_dims(im, axis=0)
@@ -63,12 +66,16 @@ for img_path in test_paths:
     gen_lr = deprocess(gen_lr).reshape(lr_shape)
     gen_hr = deprocess(gen_hr).reshape(hr_shape)
     gen_mask = gen_mask.reshape(lr_height, lr_width) 
-    gen_mask[gen_mask<0.1] = 0 
-    # Add custom thresholding to clean-up gen_mask (saliency)
-    misc.imsave(os.path.join(samples_dir, img_name+'_Inp.png'), img_lrd)
+    gen_mask[gen_mask<0.1] = 0
+    # May add further thresholding to clean gen_mask (saliency)
+    img_lrd = misc.imresize(img_lrd, (inp_h, inp_w))
+    gen_lr = misc.imresize(gen_lr, (inp_h, inp_w))
+    gen_mask = misc.imresize(gen_mask, (inp_h, inp_w))
+    gen_hr = misc.imresize(gen_hr, (inp_h*scale, inp_w*scale))
+    misc.imsave(os.path.join(samples_dir, img_name+'.png'), img_lrd)
     misc.imsave(os.path.join(samples_dir, img_name+'_En.png'), gen_lr)
-    misc.imsave(os.path.join(samples_dir, img_name+'_SESR.png'), gen_hr)
     misc.imsave(os.path.join(samples_dir, img_name+'_Sal.png'), gen_mask)
+    misc.imsave(os.path.join(samples_dir, img_name+'_SESR.png'), gen_hr)
     print ("tested: {0}".format(img_path))
 
 # some statistics    
