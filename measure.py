@@ -72,7 +72,6 @@ def measure_SSIM(GT_dir, Gen_dir):
     return np.array(ssims)
 
 
-## compares avg ssim and psnr 
 def measure_PSNR(GT_dir, Gen_dir):
     """
       # measured in lightness channel 

@@ -23,8 +23,8 @@ lr_shape = (lr_height, lr_width, 3)
 hr_shape = (hr_height, hr_width, 3)
 
 ## for testing arbitrary local data
-#data_dir = "data/test_mixed/"
-data_dir = "data/sample_test_ufo/lrd/"
+data_dir = "data/test_mixed/"
+#data_dir = "data/sample_test_ufo/lrd/"
 test_paths = getPaths(data_dir)
 print ("{0} test images are loaded".format(len(test_paths)))
 

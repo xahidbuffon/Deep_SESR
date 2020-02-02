@@ -1,11 +1,8 @@
 ### SESR: Simultaneous Enhancement and Super-Resolution 
-| Perceptual enhancement | Color and sharpness   | Hue and contrast   | 
-|:--------------------|:--------------------|:--------------------|
-| ![det-1a](/data/fig1a.jpg) | ![det-1b](/data/col.jpg) | ![det-1c](/data/con.jpg)     |
 
 | Enhanced underwater imagery | Improved detection and pose estimation  | 
 |:--------------------|:--------------------|
-| ![det-enh](/data/gif1.gif) | ![det-gif](/data/gif2.gif)     |
+| ![im1](/data/p1.jpg) | ![im1](/data/p1.jpg)     |
 
 
 ### Deep SESR model
