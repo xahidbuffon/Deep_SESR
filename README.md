@@ -2,7 +2,11 @@
 
 | Enhanced underwater imagery | Improved detection   | 
 |:-----------------------|:--------------------|
-| ![im1](/data/p1.jpg) | ![im1](/data/p2.jpg)     |
+| ![im1](/data/p1.jpg) | ![im2](/data/p2.jpg)     |
+
+
+
+![im3](/data/p3.jpg)
 
 
 ### Deep SESR model
