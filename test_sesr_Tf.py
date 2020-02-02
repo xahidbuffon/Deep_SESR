@@ -10,10 +10,54 @@ import os
 import time
 import ntpath
 import numpy as np
+import tensorflow as tf
 from scipy import misc
-from keras.models import model_from_json
 ## local libs
 from utils.data_utils import getPaths, preprocess, deprocess
+
+
+class Deep_SESR_GraphOP:
+    def __init__(self, frozen_model_path):
+        # loads the graph  
+        self.gen_graph = tf.Graph()
+        with self.gen_graph.as_default():
+            od_graph_def = tf.GraphDef()
+            with tf.gfile.GFile(frozen_model_path, 'rb') as fid:
+                serialized_graph = fid.read()
+                od_graph_def.ParseFromString(serialized_graph)
+                tf.import_graph_def(od_graph_def, name='')
+        # graphOP handler for Deep SESR  
+        ops = self.gen_graph.get_operations()
+        all_tensor_names = {output.name for op in ops for output in op.outputs}
+        self.output_dict = {}
+        for key in ['conv2d_42/Tanh', 'conv2d_45/Tanh', 'conv2d_48/Sigmoid']:
+            tensor_name = key + ':0'
+            if tensor_name in all_tensor_names:
+                self.output_dict[key] = self.gen_graph.get_tensor_by_name(tensor_name)
+        self.inp_im_tensor = self.gen_graph.get_tensor_by_name('input_3:0')
+        self.sess = tf.Session(graph=self.gen_graph)
+
+
+    def predict(self, frame):
+        """
+          Given an input frame, returns: 
+           - en_im: enhanced image (same size)
+           - sesr_im: enhanced and super-resolution image (size * scale)
+           - mask: saliency mask (same size) 
+        """
+        output_dict = self.sess.run(self.output_dict, 
+                                   feed_dict={self.inp_im_tensor: np.expand_dims(frame, 0)})
+        en_im = output_dict['conv2d_42/Tanh'][0]
+        sesr_im = output_dict['conv2d_45/Tanh'][0]
+        mask = output_dict['conv2d_48/Sigmoid'][0]
+        return en_im, sesr_im, mask
+
+
+## load specific model
+ckpt_name =  "deep_sesr_2x_1d"
+frozen_model_path = os.path.join("models/", ckpt_name+".pb")
+assert (os.path.exists(frozen_model_path))
+generator = Deep_SESR_GraphOP(frozen_model_path)
 
 # input and output data shape
 scale = 2 
@@ -23,42 +67,27 @@ lr_shape = (lr_height, lr_width, 3)
 hr_shape = (hr_height, hr_width, 3)
 
 ## for testing arbitrary local data
-#data_dir = "data/test_mixed/"
+data_dir = "data/test_mixed/"
 data_dir = "data/sample_test_ufo/lrd/"
 test_paths = getPaths(data_dir)
 print ("{0} test images are loaded".format(len(test_paths)))
 
-## load specific model
-ckpt_name =  "deep_sesr_2x_1d"
-model_h5 = os.path.join("models/", ckpt_name+".h5")  
-model_json = os.path.join("models/", ckpt_name + ".json")
-
-# load model
-assert (os.path.exists(model_h5) and os.path.exists(model_json))
-with open(model_json, "r") as json_file:
-    loaded_model_json = json_file.read()
-generator = model_from_json(loaded_model_json)
-generator.load_weights(model_h5)
-print("\nLoaded data and model")
-
 ## create dir for output test data
-samples_dir = os.path.join("data/output/", "keras_out")
+samples_dir = os.path.join("data/output/", "tf_out")
 if not os.path.exists(samples_dir): os.makedirs(samples_dir)
 
 # testing loop
 times = []; 
-for img_path in test_paths:
+for img_path in test_paths[:50]:
     # prepare data
     img_name = ntpath.basename(img_path).split('.')[0]
-    img_lrd = misc.imread(img_path, mode='RGB').astype(np.float) 
+    img_lrd = misc.imread(img_path, mode='RGB').astype(np.float)  
     inp_h, inp_w, _  =  img_lrd.shape # save the input im-shape
     img_lrd = misc.imresize(img_lrd, (lr_height,lr_width))
     im = preprocess(img_lrd)
-    im = np.expand_dims(im, axis=0)
     # generate enhanced image
     s = time.time()
-    gen_op = generator.predict(im)
-    gen_lr, gen_hr, gen_mask = gen_op[0], gen_op[1], gen_op[2]
+    gen_lr, gen_hr, gen_mask = generator.predict(im)
     tot = time.time()-s
     times.append(tot)
     # save sample images
