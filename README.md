@@ -1,10 +1,7 @@
 ### SESR: Simultaneous Enhancement and Super-Resolution 
 
-| Enhanced underwater imagery | Improved detection   | 
-|:-----------------------|:--------------------|
-| ![im1](/data/p1.jpg) | ![im2](/data/p2.jpg)     |
 
-
+![im2](/data/p2.jpg)
 
 ![im3](/data/p3.jpg)
 
