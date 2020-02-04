@@ -9,7 +9,7 @@
 
 ### Deep SESR model
 - Paper: https://arxiv.org/pdf/x.y.pdf
-- Datasets: http://irvlab.cs.umn.edu/resources/ufo-120
+- Datasets: http://irvlab.cs.umn.edu/resources/ufo-120-dataset
 - Bibliography entry for citation:
 	```
 	article{islam2020sesr,
@@ -22,7 +22,6 @@
 	```
 
 
-### Usage
-- Implementation: TensorFlow >= 1.11.0, Keras >= 2.2, and Python 2.7
+#### More details: soon...
   
 
