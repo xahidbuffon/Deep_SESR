@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 # > Various modules for handling data 
-#
+#    - Paper: https://arxiv.org/pdf/2002.01155.pdf
 # Maintainer: Jahid (email: islam034@umn.edu)
 # Interactive Robotics and Vision Lab (http://irvlab.cs.umn.edu/)
 # Any part of this repo can be used for academic and educational purposes only
