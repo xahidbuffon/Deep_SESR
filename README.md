@@ -26,10 +26,10 @@
 
 #### Bibliography entry for citation:
 	
-	@article{islam2020sesr,
-	    title={Simultaneous Enhancement and Super-Resolution of Underwater Imagery for Improved Visual Perception},
+	@inproceedings{islam2020sesr,
+	    title={{Simultaneous Enhancement and Super-Resolution of Underwater Imagery for Improved Visual Perception}},
 	    author={Islam, Md Jahidul and Luo, Peigen and Sattar, Junaed},
-	    journal={To appear in Robotics: Science and Systems (RSS). arXiv:2002.01155},
+	    booktitle={To appear in Robotics: Science and Systems (RSS). arXiv:2002.01155},
 	    year={2020}
 	}
 
