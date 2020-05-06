@@ -24,6 +24,15 @@
 - Can be downloaded from: http://irvlab.cs.umn.edu/resources/ufo-120-dataset
 
 
-#### More details: soon...
-  
+#### Bibliography entry for citation:
+	```
+	@article{islam2020sesr,
+	    title={Simultaneous Enhancement and Super-Resolution of Underwater Imagery 
+                   for Improved Visual Perception},
+	    author={Islam, Md Jahidul and Luo, Peigen and Sattar, Junaed},
+	    journal={To appear in Robotics: Science and Systems (RSS). arXiv:2002.01155},
+	    year={2020}
+	}
+	```
 
+#### More details: soon...
