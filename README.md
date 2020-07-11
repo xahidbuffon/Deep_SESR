@@ -1,6 +1,9 @@
 ### SESR: Simultaneous Enhancement and Super-Resolution 
 - Perceptually enhanced image generation at higher spatial scales
-- Paper: https://arxiv.org/pdf/2002.01155.pdf
+- Preprint: https://arxiv.org/pdf/2002.01155.pdf
+- Paper: http://www.roboticsproceedings.org/rss16/p018.pdf
+[![RSS Spotlight Talk](/data/p1.jpg)](https://youtu.be/8zBdFxaK4Os)
+
 
 ![im2](/data/p1.jpg)
 
@@ -29,7 +32,7 @@
 	@inproceedings{islam2020sesr,
 	    title={{Simultaneous Enhancement and Super-Resolution of Underwater Imagery for Improved Visual Perception}},
 	    author={Islam, Md Jahidul and Luo, Peigen and Sattar, Junaed},
-	    booktitle={To appear in Robotics: Science and Systems (RSS). arXiv:2002.01155},
+	    booktitle={Robotics: Science and Systems (RSS). arXiv:2002.01155},
 	    year={2020}
 	}
 
