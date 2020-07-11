@@ -1,14 +1,13 @@
+![im2](/data/p0.jpg)
 ### SESR: Simultaneous Enhancement and Super-Resolution 
 - Perceptually enhanced image generation at higher spatial scales
 - Preprint: https://arxiv.org/pdf/2002.01155.pdf
 - Paper: http://www.roboticsproceedings.org/rss16/p018.pdf
-[![RSS Spotlight Talk](/data/p0.jpg)](https://youtu.be/8zBdFxaK4Os)
+- RSS Spotlight Talk: https://youtu.be/8zBdFxaK4Os
 
 
-![im2](/data/p1.jpg)
-
+![im1](/data/p1.jpg)
 ![im2](/data/p2.jpg)
-
 ![im3](/data/p3.jpg)
 
 
