@@ -2,7 +2,6 @@
 - Perceptually enhanced image generation at higher spatial scales
 
 ![im0](/data/p0.jpg)
-
 ### Pointers:
 - Preprint: https://arxiv.org/pdf/2002.01155.pdf
 - Paper: http://www.roboticsproceedings.org/rss16/p018.pdf
