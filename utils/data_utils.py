@@ -151,17 +151,3 @@ class dataLoaderUFO():
         return imgs_lrd, imgs_lr, imgs_hr, imgs_mask, cmis
 
 
-if __name__=="__main__":
-    path = "/home/xahid/datasets/released/UFO-120/"
-    data_loader = dataLoaderUFO(path)
-    imgs_lr_dis, imgs_lr, imgs_hr, img_mask, cmis = data_loader.load_val_data()
-    print (cmis.shape, img_mask.shape)
-    print (np.max(img_mask), np.min(img_mask))
-    print (imgs_lr_dis.shape, imgs_lr.shape, imgs_hr.shape, img_mask.shape )
-    print (np.max(img_mask), np.min(img_mask))
-    print (imgs_lr_dis.shape, img_mask.shape )
-    import cv2
-    cv2.imshow('test', (imgs_hr[0]))
-    cv2.waitKey(1000)
-
-
