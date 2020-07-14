@@ -4,7 +4,6 @@
 #    - Paper: https://arxiv.org/pdf/2002.01155.pdf 
 # Maintainer: Jahid (email: islam034@umn.edu)
 # Interactive Robotics and Vision Lab (http://irvlab.cs.umn.edu/)
-# // usage: for academic and educational purposes only
 """
 import os
 import time
