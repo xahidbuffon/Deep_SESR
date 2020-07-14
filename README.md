@@ -30,6 +30,7 @@
 - Can be downloaded from: http://irvlab.cs.umn.edu/resources/ufo-120-dataset
 
 
+#### Bibliography entry:
 	
 	@inproceedings{islam2020sesr,
 	    title={{Simultaneous Enhancement and Super-Resolution of Underwater Imagery 
