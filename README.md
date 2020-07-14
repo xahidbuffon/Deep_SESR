@@ -28,15 +28,12 @@
 - Facilitates paired training of 2x, 3x, and 4x SESR models 
 - Also has annotated saliency maps for training saliency prediction models 
 - Can be downloaded from: http://irvlab.cs.umn.edu/resources/ufo-120-dataset
-
-
-#### Bibliography entry for citation:
 	
 	@inproceedings{islam2020sesr,
 	    title={{Simultaneous Enhancement and Super-Resolution of Underwater Imagery 
 	    	    for Improved Visual Perception}},
 	    author={Islam, Md Jahidul and Luo, Peigen and Sattar, Junaed},
-	    booktitle={Robotics: Science and Systems (RSS). arXiv:2002.01155},
+	    booktitle={Robotics: Science and Systems (RSS). ArXiv:2002.01155},
 	    year={2020}
 	}
 
