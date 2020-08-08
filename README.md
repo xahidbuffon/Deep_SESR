@@ -1,18 +1,17 @@
 ### SESR: Simultaneous Enhancement and Super-Resolution 
 - Perceptually enhanced image generation at higher spatial scales
 
-### Pointers:
-- Paper: http://www.roboticsproceedings.org/rss16/p018.pdf
-- Preprint: https://arxiv.org/pdf/2002.01155.pdf
-- RSS-2020 Spotlight Talk: https://youtu.be/8zBdFxaK4Os
-- Data: http://irvlab.cs.umn.edu/resources/ufo-120-dataset
-
 ![im1](/data/p1.jpg)
 
 ![im2](/data/p2.jpg)
 
 ![im3](/data/p3.jpg)
 
+### Pointers:
+- Paper: http://www.roboticsproceedings.org/rss16/p018.pdf
+- Preprint: https://arxiv.org/pdf/2002.01155.pdf
+- RSS-2020 Spotlight Talk: https://youtu.be/8zBdFxaK4Os
+- Data: http://irvlab.cs.umn.edu/resources/ufo-120-dataset
 
 ### Deep SESR model
 - An efficient model for underwater imagery; can be trained end-to-end for 2x-4x SESR 
