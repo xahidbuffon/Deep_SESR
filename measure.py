@@ -11,11 +11,13 @@
 import os
 import ntpath
 import numpy as np
+import skimage.transform
 from scipy import misc
 ## local libs
 from utils.data_utils import getPaths
 from utils.uiqm_utils import getUIQM
 from utils.ssm_psnr_utils import getSSIM, getPSNR
+
 
 # measurement in a common dimension
 im_w, im_h = 320, 240
@@ -43,7 +45,7 @@ def measure_UIQMs(dir_name, file_ext=None):
     uqims = []
     for img_path in paths:
         #print (paths)
-        im = misc.imresize(misc.imread(img_path), (im_h, im_w))
+        im = skimage.transform.resize(imageio.imread(img_path), (im_h, im_w))
         uqims.append(getUIQM(im))
     return np.array(uqims)
 
@@ -63,8 +65,8 @@ def measure_SSIM(GT_dir, Gen_dir):
         ## >> To evaluate only enhancement: use: 
         #gen_path = os.path.join(Gen_dir, name_split[0]+'_En.png') 
         if (gen_path in Gen_paths):
-            r_im = misc.imresize(misc.imread(img_path), (im_h, im_w))
-            g_im = misc.imresize(misc.imread(gen_path), (im_h, im_w))
+            r_im = skimage.transform.resize(imageio.imread(img_path), (im_h, im_w))
+            g_im = skimage.transform.resize(imageio.imread(gen_path), (im_h, im_w))
             assert (r_im.shape==g_im.shape), "The images should be of same-size"
             ssim = getSSIM(r_im, g_im)
             ssims.append(ssim)
@@ -87,8 +89,8 @@ def measure_PSNR(GT_dir, Gen_dir):
         ## >> To evaluate only enhancement: use: 
         #gen_path = os.path.join(Gen_dir, name_split[0]+'_En.png') 
         if (gen_path in Gen_paths):
-            r_im = misc.imresize(misc.imread(img_path, mode='L'), (im_h, im_w))
-            g_im = misc.imresize(misc.imread(gen_path, mode='L'), (im_h, im_w))
+            r_im = skimage.transform.resize(imageio.imread(img_path, mode='L'), (im_h, im_w))
+            g_im = skimage.transform.resize(imageio.imread(gen_path, mode='L'), (im_h, im_w))
             assert (r_im.shape==g_im.shape), "The images should be of same-size"
             psnr = getPSNR(r_im, g_im)
             psnrs.append(psnr)
