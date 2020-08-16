@@ -10,8 +10,8 @@ import time
 import ntpath
 import numpy as np
 import tensorflow as tf
-from scipy import misc
 import skimage.transform
+from scipy import misc
 ## local libs
 from utils.data_utils import getPaths, preprocess, deprocess
 

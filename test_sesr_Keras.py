@@ -9,10 +9,9 @@ import os
 import time
 import ntpath
 import numpy as np
-from scipy import misc
+import skimage.transform
 import imageio
 from PIL import Image
-import skimage.transform
 from keras.models import model_from_json
 ## local libs
 from utils.data_utils import getPaths, preprocess, deprocess
