@@ -14,6 +14,7 @@ import numpy as np
 from PIL import Image
 from scipy import misc
 from glob import glob
+import skimage.transform
 
 def deprocess(x):
     # [-1,1] -> [0, 1]
@@ -35,8 +36,8 @@ def getPaths(data_dir):
     return np.asarray(image_paths)
 
 def read_and_resize(paths, res=(480, 640), mode_='RGB'):
-    img = misc.imread(paths, mode=mode_).astype(np.float)
-    img = misc.imresize(img, res)
+    img = imageio.imread(paths, pilmode=mode_).astype(np.float)
+    img = skimage.transform.resize(img, res)
     return img
 
 def preprocess_mask(x):

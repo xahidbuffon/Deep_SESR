@@ -9,7 +9,9 @@ import os
 import time
 import ntpath
 import numpy as np
-from scipy import misc
+import skimage.transform
+import imageio
+from PIL import Image
 from keras.models import model_from_json
 ## local libs
 from utils.data_utils import getPaths, preprocess, deprocess
@@ -49,9 +51,10 @@ times = [];
 for img_path in test_paths:
     # prepare data
     img_name = ntpath.basename(img_path).split('.')[0]
-    img_lrd = misc.imread(img_path, mode='RGB').astype(np.float) 
+    img_lrd = imageio.imread(img_path, pilmode='RGB').astype(np.float)
+    #img_lrd = misc.imread(img_path, mode='RGB').astype(np.float) 
     inp_h, inp_w, _  =  img_lrd.shape # save the input im-shape
-    img_lrd = misc.imresize(img_lrd, (lr_height,lr_width))
+    img_lrd = skimage.transform.resize(img_lrd, (lr_height,lr_width))
     im = preprocess(img_lrd)
     im = np.expand_dims(im, axis=0)
     # generate enhanced image
@@ -68,14 +71,14 @@ for img_path in test_paths:
     # >> may add further post-processing for more informative map
     gen_mask[gen_mask<0.1] = 0 
     # reshape and save generated images for observation 
-    img_lrd = misc.imresize(img_lrd, (inp_h, inp_w))
-    gen_lr = misc.imresize(gen_lr, (inp_h, inp_w))
-    gen_mask = misc.imresize(gen_mask, (inp_h, inp_w))
-    gen_hr = misc.imresize(gen_hr, (inp_h*scale, inp_w*scale))
-    misc.imsave(os.path.join(samples_dir, img_name+'.png'), img_lrd)
-    misc.imsave(os.path.join(samples_dir, img_name+'_En.png'), gen_lr)
-    misc.imsave(os.path.join(samples_dir, img_name+'_Sal.png'), gen_mask)
-    misc.imsave(os.path.join(samples_dir, img_name+'_SESR.png'), gen_hr)
+    img_lrd = skimage.transform.resize(img_lrd, (inp_h, inp_w))
+    gen_lr = skimage.transform.resize(gen_lr, (inp_h, inp_w))
+    gen_mask = skimage.transform.resize(gen_mask, (inp_h, inp_w))
+    gen_hr = skimage.transform.resize(gen_hr, (inp_h*scale, inp_w*scale))
+    imageio.imsave(os.path.join(samples_dir, img_name+'.png'), img_lrd)
+    imageio.imsave(os.path.join(samples_dir, img_name+'_En.png'), gen_lr)
+    imageio.imsave(os.path.join(samples_dir, img_name+'_Sal.png'), gen_mask)
+    imageio.imsave(os.path.join(samples_dir, img_name+'_SESR.png'), gen_hr)
     print ("tested: {0}".format(img_path))
 
 # some statistics    
