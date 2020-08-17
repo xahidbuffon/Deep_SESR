@@ -8,10 +8,10 @@
 import os
 import time
 import ntpath
+import imageio
 import numpy as np
 import tensorflow as tf
 import skimage.transform
-from scipy import misc
 ## local libs
 from utils.data_utils import getPaths, preprocess, deprocess
 
@@ -82,8 +82,6 @@ times = [];
 for img_path in test_paths:
     # prepare data
     img_name = ntpath.basename(img_path).split('.')[0]
-    # updating deprecated scipy.imread with imageio
-    # https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.misc.imread.html
     img_lrd = imageio.imread(img_path, pilmode='RGB').astype(np.float)  
     inp_h, inp_w, _  =  img_lrd.shape # save the input im-shape
     img_lrd = skimage.transform.resize(img_lrd, (lr_height,lr_width))
@@ -101,15 +99,14 @@ for img_path in test_paths:
     # >> may add further post-processing for more informative map
     gen_mask[gen_mask<0.1] = 0 
     # reshape and save generated images for observation 
-    # Updating decremented misc.resize and misc.imsave with skimage.transform.resize and imageio.imsave
     img_lrd = skimage.transform.resize(img_lrd, (inp_h, inp_w))
     gen_lr = skimage.transform.resize(gen_lr, (inp_h, inp_w))
     gen_mask = skimage.transform.resize(gen_mask, (inp_h, inp_w))
     gen_hr = skimage.transform.resize(gen_hr, (inp_h*scale, inp_w*scale))
-    imageio.imsave(os.path.join(samples_dir, img_name+'.png'), img_lrd)
-    imageio.imsave(os.path.join(samples_dir, img_name+'_En.png'), gen_lr)
-    imageio.imsave(os.path.join(samples_dir, img_name+'_Sal.png'), gen_mask)
-    imageio.imsave(os.path.join(samples_dir, img_name+'_SESR.png'), gen_hr)
+    imageio.imsave(os.path.join(samples_dir, img_name+'.png'), np.uint8(img_lrd))
+    imageio.imsave(os.path.join(samples_dir, img_name+'_En.png'), np.uint8(gen_lr*255.))
+    imageio.imsave(os.path.join(samples_dir, img_name+'_Sal.png'), np.uint8(gen_mask*255.))
+    imageio.imsave(os.path.join(samples_dir, img_name+'_SESR.png'), np.uint8(gen_hr*255.))
     print ("tested: {0}".format(img_path))
 
 # some statistics    

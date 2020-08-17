@@ -11,7 +11,6 @@ import os
 import random
 import fnmatch
 import numpy as np
-from PIL import Image
 from scipy import misc
 from glob import glob
 import skimage.transform
