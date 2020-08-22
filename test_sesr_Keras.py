@@ -9,8 +9,11 @@ import os
 import time
 import ntpath
 import numpy as np
-from imageio import imread, imsave
-from skimage.transform import resize
+from glob import glob
+from os.path import join
+from ntpath import basename
+from PIL import Image, ImageOps
+
 from keras.models import model_from_json
 ## local libs
 from utils.data_utils import getPaths, preprocess, deprocess
@@ -49,10 +52,10 @@ if not os.path.exists(samples_dir): os.makedirs(samples_dir)
 times = []; 
 for img_path in test_paths:
     # prepare data
-    img_name = ntpath.basename(img_path).split('.')[0]
-    img_lrd = imread(img_path, pilmode='RGB').astype(np.float) 
-    inp_h, inp_w, _  =  img_lrd.shape # save the input im-shape
-    img_lrd = resize(img_lrd, (lr_height,lr_width))
+    img_name = basename(img_path).split('.')[0]
+    img_lrd = Image.open(img_path) 
+    inp_w, inp_h  =  img_lrd.size # save the input im-shape
+    img_lrd = np.array(img_lrd.resize((im_h, im_w)))
     im = preprocess(img_lrd)
     im = np.expand_dims(im, axis=0)
     # generate enhanced image

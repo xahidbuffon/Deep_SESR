@@ -43,7 +43,7 @@ def measure_UIQMs(dir_name, file_ext=None):
         paths = [p for p in paths if p.endswith(file_ext)]
     uqims = []
     for img_path in paths:
-        im = Image.open(img_path).resize((im_h, im_w))
+        im = Image.open(img_path).resize((im_w, im_h))
         uqims.append(getUIQM(np.array(im)))
     return np.array(uqims)
 
@@ -63,8 +63,8 @@ def measure_SSIM(gtr_dir, gen_dir):
         gen_path = join(gen_dir, fname + '_SESR.png') # for SESR
         #gen_path = join(gen_dir, fname + '_En.png') # enhancement
         if gen_path in gen_paths:
-            r_im = Image.open(gtr_path).resize((im_h, im_w))
-            g_im = Image.open(gen_path).resize((im_h, im_w))
+            r_im = Image.open(gtr_path).resize((im_w, im_h))
+            g_im = Image.open(gen_path).resize((im_w, im_h))
             # get ssim on RGB channels (SOTA norm)
             ssim = getSSIM(np.array(r_im), np.array(g_im))
             ssims.append(ssim)
@@ -86,8 +86,8 @@ def measure_PSNR(gtr_dir, gen_dir):
         gen_path = join(gen_dir, fname + '_SESR.png') # for SESR
         #gen_path = join(gen_dir, fname + '_En.png') # enhancement
         if gen_path in gen_paths:
-            r_im = Image.open(gtr_path).resize((im_h, im_w))
-            g_im = Image.open(gen_path).resize((im_h, im_w))
+            r_im = Image.open(gtr_path).resize((im_w, im_h))
+            g_im = Image.open(gen_path).resize((im_w, im_h))
             # get psnt on L channel (SOTA norm)
             r_im = ImageOps.grayscale(r_im)
             g_im = ImageOps.grayscale(g_im)
@@ -104,6 +104,5 @@ print ("PSNR >> Mean: {0} std: {1}".format(np.mean(PSNR_measures), np.std(PSNR_m
 ### compute and compare UIQMs
 gen_uqims = measure_UIQMs(GEN_im_dir, file_ext="_En.png")  # or file_ext="_SESR.png"
 print ("Generated UQIM >> Mean: {0} std: {1}".format(np.mean(gen_uqims), np.std(gen_uqims)))
-
 
 
