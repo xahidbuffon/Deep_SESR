@@ -19,6 +19,11 @@ def deprocess(x):
     # [-1,1] -> [0, 1]
     return (x+1.0)*0.5
 
+def deprocess_uint8(x):
+    # [-1,1] -> np.uint8 [0, 255]
+    im = ((x+1.0)*127.5)
+    return np.uint8(im)
+
 def preprocess(x):
     # [0,255] -> [-1, 1]
     return (x/127.5)-1.0
@@ -44,6 +49,19 @@ def preprocess_mask(x):
     x = x*1.0 / 255.0
     x[x<0.2] = 0
     return np.expand_dims(x, axis=3)
+
+def deprocess_mask(x):
+    # [0,1] -> np.uint8 [0, 255]
+    x *= 255.
+    x[x<0.1] = 0
+    return np.uint8(x)
+
+def normalize_mask(img):
+    # img [0, 1] => normaized [0, 255]
+    img *= 255. 
+    M, m = np.max(img), np.min(img)
+    return (img-m)/(M-m)
+
 
 def get_cmi(imgs, masks):
     cmis = []

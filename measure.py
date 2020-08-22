@@ -9,7 +9,6 @@
 """
 ## python libs
 import os
-import ntpath
 import numpy as np
 from glob import glob
 from os.path import join

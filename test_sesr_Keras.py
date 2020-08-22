@@ -7,23 +7,23 @@
 """
 import os
 import time
-import ntpath
 import numpy as np
 from glob import glob
-from os.path import join
 from ntpath import basename
+from os.path import join, exists
 from PIL import Image, ImageOps
-
 from keras.models import model_from_json
 ## local libs
-from utils.data_utils import getPaths, preprocess, deprocess
+from utils.data_utils import getPaths
+from utils.data_utils import preprocess, deprocess
+from utils.data_utils import deprocess_uint8, deprocess_mask
 
 # input and output data shape
 scale = 2 
-hr_width, hr_height = 640, 480 # HR
-lr_width, lr_height = 320, 240 # LR (1/2x)
-lr_shape = (lr_height, lr_width, 3)
-hr_shape = (hr_height, hr_width, 3)
+hr_w, hr_h = 640, 480 # HR
+lr_w, lr_h = 320, 240 # LR (1/2x)
+lr_res, lr_shape = (lr_w, lr_h), (lr_h, lr_w, 3)
+hr_res, hr_shape = (hr_w, hr_h), (hr_h, hr_w, 3)
 
 ## for testing arbitrary local data
 data_dir = "data/sample_test_ufo/lrd/"
@@ -33,11 +33,11 @@ print ("{0} test images are loaded".format(len(test_paths)))
 
 ## load specific model
 ckpt_name =  "deep_sesr_2x_1d"
-model_h5 = os.path.join("models/", ckpt_name+".h5")  
-model_json = os.path.join("models/", ckpt_name + ".json")
+model_h5 = join("models/", ckpt_name+".h5")  
+model_json = join("models/", ckpt_name + ".json")
 
 # load model
-assert (os.path.exists(model_h5) and os.path.exists(model_json))
+assert (exists(model_h5) and exists(model_json))
 with open(model_json, "r") as json_file:
     loaded_model_json = json_file.read()
 generator = model_from_json(loaded_model_json)
@@ -45,41 +45,31 @@ generator.load_weights(model_h5)
 print("\nLoaded data and model")
 
 ## create dir for output test data
-samples_dir = os.path.join("data/output/", "keras_out")
-if not os.path.exists(samples_dir): os.makedirs(samples_dir)
+samples_dir = join("data/output/", "keras_out")
+if not exists(samples_dir): os.makedirs(samples_dir)
 
 # testing loop
 times = []; 
 for img_path in test_paths:
     # prepare data
     img_name = basename(img_path).split('.')[0]
-    img_lrd = Image.open(img_path) 
-    inp_w, inp_h  =  img_lrd.size # save the input im-shape
-    img_lrd = np.array(img_lrd.resize((im_h, im_w)))
-    im = preprocess(img_lrd)
-    im = np.expand_dims(im, axis=0)
-    # generate enhanced image
+    img_lrd = np.array(Image.open(img_path).resize(lr_res))
+    im = np.expand_dims(preprocess(img_lrd), axis=0)
+    # get output
     s = time.time()
     gen_op = generator.predict(im)
     gen_lr, gen_hr, gen_mask = gen_op[0], gen_op[1], gen_op[2]
     tot = time.time()-s
     times.append(tot)
-    # save sample images
-    gen_lr = deprocess(gen_lr).reshape(lr_shape)
-    gen_hr = deprocess(gen_hr).reshape(hr_shape)
-    gen_mask = gen_mask.reshape(lr_height, lr_width) 
-    # little clean-up of the saliency map
-    # >> may add further post-processing for more informative map
-    gen_mask[gen_mask<0.1] = 0 
-    # reshape and save generated images for observation 
-    img_lrd = np.uint8(resize(img_lrd, (inp_h, inp_w)))
-    gen_lr =  np.uint8(resize(gen_lr, (inp_h, inp_w)) * 255.)
-    gen_mask = np.uint8(resize(gen_mask, (inp_h, inp_w)) * 255.)
-    gen_hr = np.uint8(resize(gen_hr, (inp_h*scale, inp_w*scale)) * 255.)
-    imsave(os.path.join(samples_dir, img_name+'.png'), img_lrd)
-    imsave(os.path.join(samples_dir, img_name+'_En.png'), gen_lr)
-    imsave(os.path.join(samples_dir, img_name+'_Sal.png'), gen_mask)
-    imsave(os.path.join(samples_dir, img_name+'_SESR.png'), gen_hr)
+    # process raw outputs 
+    gen_lr = deprocess_uint8(gen_lr).reshape(lr_shape)
+    gen_hr = deprocess_uint8(gen_hr).reshape(hr_shape)
+    gen_mask = deprocess_mask(gen_mask).reshape(lr_h, lr_w) 
+    # save generated images
+    Image.fromarray(img_lrd).save(join(samples_dir, img_name+'.png'))
+    Image.fromarray(gen_lr).save(join(samples_dir, img_name+'_En.png'))
+    Image.fromarray(gen_mask).save(join(samples_dir, img_name+'_Sal.png'))
+    Image.fromarray(gen_hr).save(join(samples_dir, img_name+'_SESR.png'))
     print ("tested: {0}".format(img_path))
 
 # some statistics    
