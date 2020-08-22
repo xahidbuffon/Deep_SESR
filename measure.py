@@ -11,10 +11,11 @@
 import os
 import ntpath
 import numpy as np
-from imageio import imread
-from skimage.transform import resize
+from glob import glob
+from os.path import join
+from ntpath import basename
+from PIL import Image, ImageOps
 ## local libs
-from utils.data_utils import getPaths
 from utils.uiqm_utils import getUIQM
 from utils.ssm_psnr_utils import getSSIM, getPSNR
 
@@ -26,7 +27,6 @@ im_w, im_h = 320, 240
 REAL_im_dir = "data/sample_test_ufo/lrd/"  # real/input im-dir with {f.ext}
 GEN_im_dir  = "data/output/keras_out/"  # generated im-dir with {f_SESR/EN.ext}
 GTr_im_dir  = "data/sample_test_ufo/hr/"  # ground truth im-dir with {f.ext}
-REAL_paths, GEN_paths = getPaths(REAL_im_dir), getPaths(GEN_im_dir)
 
 ## mesures uqim for all images in a directory
 def measure_UIQMs(dir_name, file_ext=None):
@@ -38,61 +38,60 @@ def measure_UIQMs(dir_name, file_ext=None):
         * to evaluate images that ends with "_SESR.png" or "_En.png"  
             * use file_ext = "_SESR.png" or "_En.png" 
     """
+    paths = sorted(glob(join(dir_name, "*.*")))
     if file_ext:
-        paths = [p for p in getPaths(dir_name) if p.endswith(file_ext)]
-    else: 
-        paths = getPaths(dir_name)
+        paths = [p for p in paths if p.endswith(file_ext)]
     uqims = []
     for img_path in paths:
-        #print (paths)
-        im = resize(imread(img_path).astype(np.float), (im_h, im_w))
-        uqims.append(getUIQM(im))
+        im = Image.open(img_path).resize((im_h, im_w))
+        uqims.append(getUIQM(np.array(im)))
     return np.array(uqims)
 
 
-def measure_SSIM(GT_dir, Gen_dir):
+def measure_SSIM(gtr_dir, gen_dir):
     """
       # measured in RGB
       Assumes:
-        * GT_dir contain ground-truths {filename.ext}
-        * Gen_dir contain generated images {filename_SESR.png} 
+        * gtr_dir contain ground-truths {filename.ext}
+        * gen_dir contain generated images {filename_SESR.png} 
     """
-    GT_paths, Gen_paths = getPaths(GT_dir), getPaths(Gen_dir)
+    gtr_paths = sorted(glob(join(gtr_dir, "*.*")))
+    gen_paths = sorted(glob(join(gen_dir, "*.*")))
     ssims = []
-    for img_path in GT_paths:
-        name_split = ntpath.basename(img_path).split('.')
-        gen_path = os.path.join(Gen_dir, name_split[0]+'_SESR.png') 
-        ## >> To evaluate only enhancement: use: 
-        #gen_path = os.path.join(Gen_dir, name_split[0]+'_En.png') 
-        if (gen_path in Gen_paths):
-            r_im = resize(imread(img_path).astype(np.float), (im_h, im_w))
-            g_im = resize(imread(gen_path).astype(np.float), (im_h, im_w))
-            assert (r_im.shape==g_im.shape), "The images should be of same-size"
-            ssim = getSSIM(r_im, g_im)
+    for gtr_path in gtr_paths:
+        fname = basename(gtr_path).split('.')[0]
+        gen_path = join(gen_dir, fname + '_SESR.png') # for SESR
+        #gen_path = join(gen_dir, fname + '_En.png') # enhancement
+        if gen_path in gen_paths:
+            r_im = Image.open(gtr_path).resize((im_h, im_w))
+            g_im = Image.open(gen_path).resize((im_h, im_w))
+            # get ssim on RGB channels (SOTA norm)
+            ssim = getSSIM(np.array(r_im), np.array(g_im))
             ssims.append(ssim)
-
     return np.array(ssims)
 
 
-def measure_PSNR(GT_dir, Gen_dir):
+def measure_PSNR(gtr_dir, gen_dir):
     """
       # measured in lightness channel 
       Assumes:
-        * GT_dir contain ground-truths {filename.ext}
-        * Gen_dir contain generated images {filename_SESR.png}
+        * gtr_dir contain ground-truths {filename.ext}
+        * gen_dir contain generated images {filename_SESR.png}
     """
-    GT_paths, Gen_paths = getPaths(GT_dir), getPaths(Gen_dir)
-    ssims, psnrs = [], []
-    for img_path in GT_paths:
-        name_split = ntpath.basename(img_path).split('.')
-        gen_path = os.path.join(Gen_dir, name_split[0]+'_SESR.png') 
-        ## >> To evaluate only enhancement: use: 
-        #gen_path = os.path.join(Gen_dir, name_split[0]+'_En.png') 
-        if (gen_path in Gen_paths):
-            r_im = resize(imread(img_path, pilmode='L').astype(np.float), (im_h, im_w))
-            g_im = resize(imread(gen_path, pilmode='L').astype(np.float), (im_h, im_w))
-            assert (r_im.shape==g_im.shape), "The images should be of same-size"
-            psnr = getPSNR(r_im, g_im)
+    gtr_paths = sorted(glob(join(gtr_dir, "*.*")))
+    gen_paths = sorted(glob(join(gen_dir, "*.*")))
+    psnrs = []
+    for gtr_path in gtr_paths:
+        fname = basename(gtr_path).split('.')[0]
+        gen_path = join(gen_dir, fname + '_SESR.png') # for SESR
+        #gen_path = join(gen_dir, fname + '_En.png') # enhancement
+        if gen_path in gen_paths:
+            r_im = Image.open(gtr_path).resize((im_h, im_w))
+            g_im = Image.open(gen_path).resize((im_h, im_w))
+            # get psnt on L channel (SOTA norm)
+            r_im = ImageOps.grayscale(r_im)
+            g_im = ImageOps.grayscale(g_im)
+            psnr = getPSNR(np.array(r_im), np.array(g_im))
             psnrs.append(psnr)
     return np.array(psnrs)
 
