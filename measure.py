@@ -13,7 +13,7 @@ import numpy as np
 from glob import glob
 from os.path import join
 from ntpath import basename
-from PIL import Image, ImageOps
+from PIL import Image
 ## local libs
 from utils.uiqm_utils import getUIQM
 from utils.ssm_psnr_utils import getSSIM, getPSNR
@@ -88,8 +88,7 @@ def measure_PSNR(gtr_dir, gen_dir):
             r_im = Image.open(gtr_path).resize((im_w, im_h))
             g_im = Image.open(gen_path).resize((im_w, im_h))
             # get psnt on L channel (SOTA norm)
-            r_im = ImageOps.grayscale(r_im)
-            g_im = ImageOps.grayscale(g_im)
+            r_im = r_im.convert("L"); g_im = g_im.convert("L")
             psnr = getPSNR(np.array(r_im), np.array(g_im))
             psnrs.append(psnr)
     return np.array(psnrs)
