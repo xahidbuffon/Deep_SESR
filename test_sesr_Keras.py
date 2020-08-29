@@ -11,7 +11,7 @@ import numpy as np
 from glob import glob
 from ntpath import basename
 from os.path import join, exists
-from PIL import Image, ImageOps
+from PIL import Image
 from keras.models import model_from_json
 ## local libs
 from utils.data_utils import getPaths
