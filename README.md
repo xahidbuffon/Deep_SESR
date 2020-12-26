@@ -31,10 +31,13 @@
 #### Bibliography entry:
 	
 	@inproceedings{islam2020sesr,
+	    author={Islam, Md Jahidul and Luo, Peigen and Sattar, Junaed},
 	    title={{Simultaneous Enhancement and Super-Resolution of Underwater Imagery 
 	    	    for Improved Visual Perception}},
-	    author={Islam, Md Jahidul and Luo, Peigen and Sattar, Junaed},
-	    booktitle={Robotics: Science and Systems (RSS). ArXiv:2002.01155},
-	    year={2020}
+	    booktitle={Robotics: Science and Systems (RSS)},
+	    year={2020},
+	    month={July},
+	    address={Corvalis, Oregon, USA},
+	    doi={{10.15607/RSS.2020.XVI.018}}
 	}
 
